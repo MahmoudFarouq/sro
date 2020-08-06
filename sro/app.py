@@ -1,8 +1,9 @@
 import os
 from cement.utils import fs
-
 from cement import App, TestApp, init_defaults
+
 from sro.controllers.base import Base
+from sro.controllers.npc import NPC, AddNPC
 
 # configuration defaults
 CONFIG = init_defaults('sro')
@@ -41,7 +42,10 @@ class Sro(App):
 
         # register handlers
         handlers = [
-            Base
+            Base,
+
+            NPC,
+            AddNPC
         ]
 
 
