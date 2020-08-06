@@ -1,10 +1,10 @@
-.PHONY: clean virtualenv test docker dist dist-upload
+.PHONY: clean virtualenv test dist dist-upload
 
 clean:
 	find . -name '*.py[co]' -delete
 
 virtualenv:
-	virtualenv --prompt '|> sro <| ' env
+	python3 -m venv --prompt '|> sro <| ' env
 	env/bin/pip install -r requirements-dev.txt
 	env/bin/python setup.py develop
 	@echo
@@ -18,9 +18,6 @@ test:
 		--cov-report=term \
 		--cov-report=html:coverage-report \
 		tests/
-
-docker: clean
-	docker build -t sro:latest .
 
 dist: clean
 	rm -rf dist/*
