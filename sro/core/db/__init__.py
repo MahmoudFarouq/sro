@@ -6,16 +6,16 @@ engine = create_engine('sqlite:///:memory:', echo=True)
 
 Session = sessionmaker(bind=engine)
 
-def session(session_instance: Session):
-    def outer_wrapper(func):
-        def inner_wrapper(*args, **kwargs):
-            try:
-                func(*args, **kwargs)
-                session_instance.commit()
-            except:
-                session_instance.rollback()
-                raise
-            finally:
-                session_instance.close()
-        return inner_wrapper
-    return outer_wrapper
+def transaction(func):
+    def wrapper(*args, **kwargs):
+        try:
+            session_instance = Session()
+            kwargs['session'] = session_instance
+            func(*args, **kwargs)
+            session_instance.commit()
+        except:
+            session_instance.rollback()
+            raise
+        finally:
+            session_instance.close()
+    return wrapper

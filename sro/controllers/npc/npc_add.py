@@ -1,5 +1,6 @@
 from cement import Controller, ex
 
+from sro.core.entities import NPC, NPCGroup, NPCGroupTab
 from sro.core.services import NPCService, CharacterService
 
 class AddNPC(Controller):
@@ -29,9 +30,25 @@ class AddNPC(Controller):
             As an alternate method, we will take this data in a json file instead.
         """
 
-
     @ex(help='An interactive app that creates an NPC from user input.')
     def create(self):
         self.app.log.info(self.banner)
-        npc_name = input("Please enter NPC Name: ")
-        self.app.log.info(f"You entered: {npc_name}")
+        npc = NPC()
+
+        npc.set_name(input("Please enter NPC CodeName: ")
+            ).set_textname(input("Please enter NPC Name: ")
+            ).set_3dmodel_path(input("Please enter NPC '3D Model' path: "))
+
+        n_groups = int(input("How many Groups would you like to add? "))
+        for i in range(1, n_groups + 1):
+            npc_group  = NPCGroup()
+            npc_group.set_name(input(f"Please enter Group {i} Name: "))
+
+            n_tabs = int(input("How many Tabs would you like In this Group? "))
+            for j in range(1, n_tabs + 1):
+                group_tab = NPCGroupTab()
+                group_tab.set_name(input(f"Please enter Tab {j} Name: "))
+                npc_group.add_tab(group_tab)
+            npc.add_group(npc_group)
+
+        self._npc_service.add_npc(npc)
